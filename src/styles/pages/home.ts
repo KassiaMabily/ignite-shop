@@ -52,6 +52,25 @@ export const Product = styled('div', {
             fontWeight: 'bold',
             color: '$green300'
         },
+
+        div: {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 4
+        },
+
+        button: {
+            padding: 12,
+            color: '$white',
+            borderRadius: 6,
+            border: 'none',
+            backgroundColor: '$green500',
+            cursor: 'pointer',
+
+            '&:not(:disabled):hover': {
+                backgroundColor: '$green300',
+            }
+        }
     },
 
     '&:hover': {

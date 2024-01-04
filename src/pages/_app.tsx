@@ -1,12 +1,11 @@
-import { globalStyles } from '@/styles/global'
+import { Roboto } from 'next/font/google'
 import type { AppProps } from 'next/app'
 
-import { Roboto } from 'next/font/google'
+import { Container } from "@/styles/pages/app"
+import { CartProvider } from 'use-shopping-cart'
 
-import logoImg from "../assets/logo.svg"
-import { Container, Header } from "@/styles/pages/app"
-
-import Image from "next/image"
+import { globalStyles } from '@/styles/global'
+import { Header } from '@/components/header'
 
 const roboto = Roboto({
   weight: ['400', '700'],
@@ -15,15 +14,24 @@ const roboto = Roboto({
 
 globalStyles()
 
+const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY as string
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Container className={roboto.className}>
-      <Header>
-        <Image src={logoImg} alt="" />
-      </Header>
+    <CartProvider
+      cartMode="checkout-session"
+      stripe={stripeKey}
+      currency="BRL"
+      shouldPersist={true}
+    >
+      <>
+        <Container className={roboto.className}>
+          <Header />
 
-      <Component {...pageProps} />
+          <Component {...pageProps} />
 
-    </Container>
-  )
+        </Container>
+      </>
+    </CartProvider>
+    )
 }

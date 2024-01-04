@@ -12,17 +12,16 @@ import { GetStaticProps } from "next"
 import Stripe from "stripe"
 import Link from "next/link"
 import Head from "next/head"
+import { useShoppingCart } from "use-shopping-cart"
+import { Product as IProduct } from "use-shopping-cart/core"
+import { Handbag } from "@phosphor-icons/react"
 
-interface HomeProps {
-  products: {
-    id: string;
-    name: string;
-    imageUrl: string;
-    price: string;
-  }[]
+type HomeProps = {
+  products: any[]
 }
 
 export default function Home({ products }: HomeProps) {
+  const { addItem } = useShoppingCart();
   const [ sliderRef ] = useKeenSlider({
     slides: {
       perView: 3,
@@ -40,16 +39,28 @@ export default function Home({ products }: HomeProps) {
         {
           products.map(product => {
             return (
-              <Link key={product.id}  href={`/product/${product.id}`} prefetch={false}>
+              <Link key={product.id}  href={`/product/${product.product_id}`} prefetch={false}>
                 <Product className="keen-slider__slide">
                   {/* TODO: Simular carregamento de imagem */}
                   {/* https://nextjs.org/docs/pages/api-reference/components/image-legacy#blurdataurl */}
                   {/* https://github.com/woltapp/blurhash */}
-                  <Image src={product.imageUrl} width={520} height={480} alt="" />
+                  <Image src={product.image} width={520} height={480} alt="" />
 
                   <footer>
-                    <strong>{product.name}</strong>
-                    <span>{product.price}</span>
+                    <div>
+                      <strong>{product.name}</strong>
+                      <span>{product.formatted_price}</span>
+                    </div>
+
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        addItem(product)
+                      }}
+                    >
+                      <Handbag size={24} />
+                    </button>
                   </footer>
                 </Product>
               </Link>
@@ -70,13 +81,17 @@ export const getStaticProps: GetStaticProps = async () => {
     const price = product.default_price as Stripe.Price
 
     return {
-      id: product.id,
+      id: price.id,
+      product_id: product.id,
       name: product.name,
-      imageUrl: product.images.length > 0 ? product.images[0] : camiseta1,
-      price: new Intl.NumberFormat('pt-BR', {
+      description: product.description,
+      price: price.unit_amount ?? 0,
+      image: product.images.length > 0 ? product.images[0] : undefined,
+      currency: 'brl',
+      formatted_price: new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL'
-      }).format((price.unit_amount ?? 0) / 100)
+      }).format((price.unit_amount ?? 0)/ 100),
     }
   })
 
