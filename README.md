@@ -3,7 +3,7 @@
     <p>A fullstack web application for purchasing multiple products using Stripe</p>
 </div>
 
-<img src=".github/Capa.png" alt="Ignite Shop Cover" />
+<img src=".github/Cover.png" alt="Ignite Shop Cover" />
 
 ## 💻 Overview
 This application was developed as challenge of Ignite program by RocketSeat. The Ignite Shop app is a simple example of a web application to purchasing multiple products using Stripe and NextJS
